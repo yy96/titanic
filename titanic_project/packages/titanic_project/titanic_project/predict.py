@@ -1,37 +1,19 @@
 import pandas as pd
 
 import joblib
+
 from titanic_project.config import config
+from titanic_project.processing.data_management import load_pipeline
+
+pipeline_file_name = "logistic_regression.pkl"
+_titanic_pipeline = load_pipeline(pipeline_file_name)
 
 
-def make_prediction(input_data):
+def make_prediction(*, input_data) -> dict:
     
-    # load pipeline and make predictions
-    _pipe_titanic = joblib.load(config.PIPELINE_NAME)
+    data = pd.read_json(input_data)
+    prediction = _titanic_pipeline.predict(data.drop(config.TARGET, axis=1))
+    response = {"prediction": prediction}
 
-    # return predictions
-    results = _pipe_titanic.predict(input_data)
-
-    return results
-   
-if __name__ == '__main__':
-    
-    # test pipeline
-    import numpy as np
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import accuracy_score
-
-    data = pd.read_csv(config.TRAINING_DATA_FILE)
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        data.drop(config.TARGET, axis=1),
-        data[config.TARGET],
-        test_size=0.2,
-        random_state=0)  # we are setting the seed here
-    
-    pred = make_prediction(X_test)
-    
-    # determine the accuracy
-    print('test accuracy: {}'.format(accuracy_score(y_test, pred)))
-    print()
+    return response
 
