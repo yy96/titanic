@@ -9,7 +9,8 @@ DATASET_DIR = PACKAGE_ROOT / "datasets"
 # ====   PATHS ===================
 
 TRAINING_DATA_FILE = "titanic.csv"
-PIPELINE_NAME = 'logistic_regression.pkl'
+# PIPELINE_NAME = 'logistic_regression.pkl'
+PIPELINE_SAVE_FILE = "logistic_regression"
 
 
 # ======= FEATURE GROUPS =============
