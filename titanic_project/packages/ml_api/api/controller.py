@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from titanic_project.predict import make_prediction
 
 from api.config import get_logger
 
@@ -11,3 +12,19 @@ def health():
     if request.method == 'GET':
         _logger.info('health status OK')
         return 'ok'
+
+# v1 to allow the change for API contract
+@prediction_app.route('/v1/predict/titanic', methods=['POST'])
+def predict():
+    if request.method == 'POST':
+        json_data = request.get_json()
+        _logger.info(f'Inputs: {json_data}')
+
+        result = make_prediction(input_data=json_data)
+        _logger.info(f'Outputs: {result}')
+
+        predictions = result.get('predictions')[0]
+        version = result.get('version')
+
+        return jsonify({'predictions': predictions,
+                        'version': version})
